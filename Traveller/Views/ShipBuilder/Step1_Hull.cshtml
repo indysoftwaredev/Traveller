@@ -1,0 +1,88 @@
+﻿@model Ship
+@{
+    ViewData["Title"] = "Ship Builder - Hull Selection";
+}
+
+<div class="container">
+
+    @{
+        if (Model.Hull.TonsDisplacement > 0)
+        {
+            <div class="card mt-4">
+                <div class="card-header">
+                    <div>@Model.Name</div>
+                    <div>@(Model.Hull.TonsDisplacement)t @Html.DisplayFor(m => m.Hull.HullConfiguration)</div>
+                    <div>Cost (MCr): @Model.TotalCostMCr</div>
+                    <div>Hull Points: @Model.HullPoints</div>
+                    @if (Model.Hull.UsableTonnage != Model.Hull.TonsDisplacement)
+                    {
+                        <label class="form-label">Usable Tonnage: @Model.Hull.UsableTonnage tons</label>
+                    }
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Tech Level</th>
+                                <th>Tonnage</th>
+                                <th>Power</th>
+                                <th>Cost (MCr)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var component in Model.Components)
+                            {
+                                <tr>
+                                    <td>@component.Name</td>
+                                    <td>@component.TechLevel</td>
+                                    <td>@component.TonsDisplacement</td>
+                                    <td>@component.PowerRequired</td>
+                                    <td>@component.CostMCr</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
+
+    <div class="card mt-3">
+        <div class="card-header" role="button" data-bs-toggle="collapse" data-bs-target="#hullSelectionSection" aria-expanded="true" aria-controls="hullSelectionSection">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">Create Hull</h2>
+                <i class="bi bi-chevron-down"></i>
+            </div>
+        </div>
+        <div id="hullSelectionSection" class="collapse show">
+            <form asp-action="SaveHull" method="post">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Hull.HullConfiguration" class="form-label">Hull Configuration</label>
+                        <select asp-for="Hull.HullConfiguration" asp-items="Html.GetEnumSelectList<HullConfiguration>()" class="form-select">
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Hull.TonsDisplacement" class="form-label">Displacement (tons)</label>
+                        <input asp-for="Hull.TonsDisplacement" type="number" class="form-control" />
+                        <span asp-validation-for="Hull.TonsDisplacement" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input asp-for="Hull.GravityHull" type="checkbox" class="form-check-input" />
+                        <label asp-for="Hull.GravityHull" class="form-check-label">Gravity Hull</label>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Hull.Construction" class="form-label">Hull Construction</label>
+                        <select asp-for="Hull.Construction" asp-items="Html.GetEnumSelectList<Construction>()" class="form-select">
+                        </select>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
