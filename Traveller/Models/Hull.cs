@@ -9,9 +9,7 @@ namespace Traveller.Models
         public override string Name { get; set; } = "Hull";
 
         [Range(10, int.MaxValue, ErrorMessage = "Tonnage must be greater than 10.")]
-        public override int TonsDisplacement { get; set; } = 10;
-
-        public override decimal CostMCr { get { return Cost / 1000000; } }
+        public override decimal TonsDisplacement { get; set; } = 10;
 
         public override decimal Cost { get { return HullCalculator.CalculateCost(this); } }
 

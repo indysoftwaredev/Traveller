@@ -9,8 +9,7 @@ namespace Traveller.Models
     {
         public Ship()
         {
-            Components = new List<ShipComponent>();
-            Components.Add(new Hull());
+            Components = [new Hull()];
         }
 
         public int Id { get; set; }

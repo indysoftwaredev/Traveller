@@ -4,85 +4,185 @@
 }
 
 <div class="container">
-
-    @{
-        if (Model.Hull.TonsDisplacement > 0)
-        {
-            <div class="card mt-4">
-                <div class="card-header">
-                    <div>@Model.Name</div>
-                    <div>@(Model.Hull.TonsDisplacement)t @Html.DisplayFor(m => m.Hull.HullConfiguration)</div>
-                    <div>Cost (MCr): @Model.TotalCostMCr</div>
-                    <div>Hull Points: @Model.HullPoints</div>
-                    @if (Model.Hull.UsableTonnage != Model.Hull.TonsDisplacement)
-                    {
-                        <label class="form-label">Usable Tonnage: @Model.Hull.UsableTonnage tons</label>
-                    }
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Component</th>
-                                <th>Tech Level</th>
-                                <th>Tonnage</th>
-                                <th>Power</th>
-                                <th>Cost (MCr)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var component in Model.Components)
-                            {
-                                <tr>
-                                    <td>@component.Name</td>
-                                    <td>@component.TechLevel</td>
-                                    <td>@component.TonsDisplacement</td>
-                                    <td>@component.PowerRequired</td>
-                                    <td>@component.CostMCr</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        }
-    }
+    <input type="hidden" id="shipModel" value="@Model" />
+    <div id="shipSummaryContainer">
+        @await Html.PartialAsync("_ShipSummary.cshtml", Model)
+    </div>
 
     <div class="card mt-3">
         <div class="card-header" role="button" data-bs-toggle="collapse" data-bs-target="#hullSelectionSection" aria-expanded="true" aria-controls="hullSelectionSection">
             <div class="d-flex justify-content-between align-items-center">
-                <h2 class="mb-0">Create Hull</h2>
+                <h4 class="mb-0">Create Hull</h4>
                 <i class="bi bi-chevron-down"></i>
             </div>
         </div>
         <div id="hullSelectionSection" class="collapse show">
             <form asp-action="SaveHull" method="post">
                 <div class="card-body">
-                    <div class="mb-3">
-                        <label asp-for="Hull.HullConfiguration" class="form-label">Hull Configuration</label>
-                        <select asp-for="Hull.HullConfiguration" asp-items="Html.GetEnumSelectList<HullConfiguration>()" class="form-select">
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Hull.TonsDisplacement" class="form-label">Displacement (tons)</label>
-                        <input asp-for="Hull.TonsDisplacement" type="number" class="form-control" />
-                        <span asp-validation-for="Hull.TonsDisplacement" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input asp-for="Hull.GravityHull" type="checkbox" class="form-check-input" />
-                        <label asp-for="Hull.GravityHull" class="form-check-label">Gravity Hull</label>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Hull.Construction" class="form-label">Hull Construction</label>
-                        <select asp-for="Hull.Construction" asp-items="Html.GetEnumSelectList<Construction>()" class="form-select">
-                        </select>
+                    <div class="row mb-1">
+                        <div class="col-md-3">
+                            <label asp-for="Hull.HullConfiguration" class="form-label">Hull Configuration</label>
+                            <select asp-for="Hull.HullConfiguration" asp-items="Html.GetEnumSelectList<HullConfiguration>()" class="form-select">
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="Hull.TonsDisplacement" class="form-label">Displacement (tons)</label>
+                            <input asp-for="Hull.TonsDisplacement" type="number" class="form-control" />
+                            <span asp-validation-for="Hull.TonsDisplacement" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="Hull.Construction" class="form-label">Hull Construction</label>
+                            <select asp-for="Hull.Construction" asp-items="Html.GetEnumSelectList<Construction>()" class="form-select">
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">&nbsp;</label>
+                            <div class="form-check pt-2">
+                                <input asp-for="Hull.GravityHull" type="checkbox" class="form-check-input" />
+                                <label asp-for="Hull.GravityHull" class="form-check-label">Gravity Hull</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary w-100">Apply</button>
+                        </div>
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">Apply</button>
-                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
     </div>
+
+    <div class="card mt-3">
+        <div class="card-header" role="button" data-bs-toggle="collapse" data-bs-target="#armorSelectionSection" aria-expanded="true" aria-controls="armorSelectionSection">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Add Armor</h4>
+                <i class="bi bi-chevron-down"></i>
+            </div>
+        </div>
+        <div id="armorSelectionSection" class="collapse show">
+            <form asp-action="AddArmor" method="post">
+                <div class="card-body">
+                    <div class="row mb-1">
+                        <div class="col-md-2">
+                            <label class="form-label">Armor Type</label>
+                            <select name="ArmorType" class="form-select" id="armorType" asp-items="Html.GetEnumSelectList<ArmorType>()">
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Protection Level</label>
+                            <input type="number" name="ProtectionLevel" class="form-control" id="protectionLevel" min="1" value="1" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Cost (Cr):</label>
+                            <input type="text" class="form-control" id="costMCr" readonly />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Tonnage:</label>
+                            <input type="text" class="form-control" id="tonsDisplacement" readonly />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Tech Level:</label>
+                            <input type="text" class="form-control" id="techLevel" readonly />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary w-100">Add Armor</button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                    </div>
+                </div>
+                <div class="card-footer">
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script>
+            // Wait for the DOM to be fully loaded before running any JavaScript
+            document.addEventListener('DOMContentLoaded', function () {
+                // Get references to the elements we need
+                const armorTypeSelect = document.getElementById('armorType');
+                const protectionLevelInput = document.getElementById('protectionLevel');
+                const costMcrDisplay = document.getElementById('costMCr');
+                const tonnageDisplay = document.getElementById('tonsDisplacement');
+                const techLevelDisplay = document.getElementById('techLevel');
+
+                // Function to update calculations
+                function updateArmorCalculations() {
+                    // Get current values
+                    const armorType = armorTypeSelect.value;
+                    const protectionLevel = protectionLevelInput.value;
+
+                    // Make the AJAX call
+                    fetch(`/ShipBuilder/CalculateArmor?armorType=${armorType}&protectionLevel=${protectionLevel}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // Update the display fields
+                            costMcrDisplay.value = data.costMCr.toFixed(0);
+                            tonnageDisplay.value = data.tonsDisplacement.toFixed(2);
+                            techLevelDisplay.value = data.techLevel;
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }
+
+                // Add event listeners
+                armorTypeSelect.addEventListener('change', updateArmorCalculations);
+                protectionLevelInput.addEventListener('input', updateArmorCalculations);
+
+                // Run initial calculation
+                updateArmorCalculations();
+
+                
+            });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const hullForm = document.querySelector('#hullSelectionSection form');
+                const inputs = hullForm.querySelectorAll('input, select');
+
+                function updateHull() {
+                    const formData = new FormData(hullForm);
+
+                    fetch('/ShipBuilder/CalculateHull', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.text();
+                        })
+                        .then(html => {
+                            if (html.includes("System.InvalidOperationException")) {
+                                console.error("Server error:", html);
+                                return;
+                            }
+                            document.getElementById('shipSummaryContainer').innerHTML = html;
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }
+
+                inputs.forEach(input => input.addEventListener('change', updateHull));
+                hullForm.addEventListener('submit', e => {
+                    e.preventDefault();
+                    updateHull();
+                });
+            });
+        </script>
+    }
 </div>
