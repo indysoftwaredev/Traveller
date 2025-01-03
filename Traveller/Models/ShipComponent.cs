@@ -13,11 +13,11 @@ namespace Traveller.Models
         public virtual decimal PowerRequired { get; set; }
 
         [Required]
-        public virtual int TonsDisplacement { get; set; }
+        public virtual decimal TonsDisplacement { get; set; }
 
         [Required]
         [Display(Name = "Cost (MCr)")]
-        public virtual decimal CostMCr { get; set; }
+        public virtual decimal CostMCr { get => Cost / 1000000; }
 
         public virtual decimal Cost { get; set; }
 
