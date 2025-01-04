@@ -42,10 +42,6 @@
                                 <label asp-for="Hull.GravityHull" class="form-check-label">Gravity Hull</label>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <label class="form-label">&nbsp;</label>
-                            <button type="submit" class="btn btn-primary w-100">Apply</button>
-                        </div>
                     </div>
                 </div>
                 <div class="card-footer">
@@ -177,10 +173,12 @@
                         });
                 }
 
-                inputs.forEach(input => input.addEventListener('change', updateHull));
-                hullForm.addEventListener('submit', e => {
-                    e.preventDefault();
-                    updateHull();
+                inputs.forEach(input => {
+                    input.addEventListener('change', updateHull);
+                    // Add input event listener for number inputs to capture typing
+                    if (input.type === 'number') {
+                        input.addEventListener('input', updateHull);
+                    }
                 });
             });
         </script>
