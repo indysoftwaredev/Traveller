@@ -4,7 +4,7 @@
 <div class="card mt-4" id="shipSummary">
     <div class="card-header">
         <div>@Model.Name</div>
-        <div>@(Model.Hull.TonsDisplacement)t @Html.DisplayFor(m => m.Hull.HullConfiguration)</div>
+        <div>Hull: @(Model.Hull.TonsDisplacement)t @Html.DisplayFor(m => m.Hull.HullConfiguration)</div>
         <div>Cost (MCr): @Model.TotalCostMCr</div>
         <div>Hull Points: @Model.HullPoints</div>
         @if (Model.Hull.UsableTonnage != Model.Hull.TonsDisplacement)
