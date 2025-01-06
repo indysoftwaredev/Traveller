@@ -2,8 +2,10 @@
 
 namespace Traveller.Models
 {
-    public abstract class ShipComponent
+    public class ShipComponent
     {
+        public ShipComponent() { }
+
         public int Id { get; set; }
 
         [Required]

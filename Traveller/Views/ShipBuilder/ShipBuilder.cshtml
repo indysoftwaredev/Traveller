@@ -102,6 +102,44 @@
         <script>
             // Wait for the DOM to be fully loaded before running any JavaScript
             document.addEventListener('DOMContentLoaded', function () {
+
+
+                const hullForm = document.querySelector('#hullSelectionSection form');
+                const inputs = hullForm.querySelectorAll('input, select');
+
+                function updateHull() {
+                    const formData = new FormData(hullForm);
+
+                    fetch('/ShipBuilder/CalculateHull', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.text();
+                        })
+                        .then(html => {
+                            if (html.includes("System.InvalidOperationException")) {
+                                console.error("Server error:", html);
+                                return;
+                            }
+                            document.getElementById('shipSummaryContainer').innerHTML = html;
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }
+
+                inputs.forEach(input => {
+                    input.addEventListener('change', updateHull);
+                    // Add input event listener for number inputs to capture typing
+                    if (input.type === 'number') {
+                        input.addEventListener('input', updateHull);
+                    }
+                });
+
                 // Get references to the elements we need
                 const armorTypeSelect = document.getElementById('armorType');
                 const protectionLevelInput = document.getElementById('protectionLevel');
@@ -145,41 +183,6 @@
             });
 
             document.addEventListener('DOMContentLoaded', function () {
-                const hullForm = document.querySelector('#hullSelectionSection form');
-                const inputs = hullForm.querySelectorAll('input, select');
-
-                function updateHull() {
-                    const formData = new FormData(hullForm);
-
-                    fetch('/ShipBuilder/CalculateHull', {
-                        method: 'POST',
-                        body: formData
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            return response.text();
-                        })
-                        .then(html => {
-                            if (html.includes("System.InvalidOperationException")) {
-                                console.error("Server error:", html);
-                                return;
-                            }
-                            document.getElementById('shipSummaryContainer').innerHTML = html;
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                }
-
-                inputs.forEach(input => {
-                    input.addEventListener('change', updateHull);
-                    // Add input event listener for number inputs to capture typing
-                    if (input.type === 'number') {
-                        input.addEventListener('input', updateHull);
-                    }
-                });
             });
         </script>
     }

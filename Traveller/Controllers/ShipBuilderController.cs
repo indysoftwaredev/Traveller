@@ -22,40 +22,7 @@ namespace Traveller.Controllers
         public IActionResult Index()
         {
             Ship ship = GetShipFromSession();
-            return View("Step1_Hull", ship);
-        }
-
-        [HttpPost]
-        public IActionResult SaveHull(Ship ship)
-        {
-            if (!ModelState.IsValid)
-                return View("Step1_Hull", ship);
-
-            SaveShipToSession(ship);
-            return RedirectToAction("Step2_Drives");
-        }
-
-        public IActionResult Step2_Drives()
-        {
-            var ship = GetShipFromSession();
-            if (ship == null)
-                return RedirectToAction("Index");
-
-            return View(ship);
-        }
-
-        [HttpPost]
-        public IActionResult SaveDrives(JumpDrive jumpDrive, ManeuverDrive maneuverDrive)
-        {
-            var ship = GetShipFromSession();
-            if (ship == null)
-                return RedirectToAction("Index");
-
-            ship.JumpDrive = jumpDrive;
-            ship.ManeuverDrive = maneuverDrive;
-
-            HttpContext.Session.Set(ShipSessionKey, ship);
-            return RedirectToAction("Step3_PowerPlant");
+            return View("ShipBuilder", ship);
         }
 
         [HttpPost]
@@ -85,35 +52,12 @@ namespace Traveller.Controllers
         [HttpPost]
         public IActionResult AddArmor(ArmorType armorType, int protectionLevel)
         {
-            //not sure if this is how it should be - for now, work on the display.
-
-            /*var armor = new Armor
-            {
-                ArmorType = armorType,
-                TonsDisplacement = CalculateArmorTonnage(armorType, protectionLevel),
-                Cost = CalculateArmorCost(armorType, protectionLevel),
-                TechLevel = GetArmorTechLevel(armorType)
-            };*/
-                        
             var ship = GetShipFromSession();
-            //ship.Components.Add(armor);
+            Armor armor = ShipArmorCalculator.CalculateArmor(armorType, protectionLevel, ship);
+            ship.Components.Add(armor);
             SaveShipToSession(ship);
 
             return RedirectToAction(nameof(Index));
-        }
-
-        public IActionResult Summary()
-        {
-            var ship = GetShipFromSession();
-            if (ship == null)
-                return RedirectToAction("Index");
-
-            return View(ship);
-        }
-
-        public IActionResult Test()
-        {
-            return View();
         }
     }
 }
