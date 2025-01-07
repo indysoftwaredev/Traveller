@@ -12,7 +12,8 @@ namespace Traveller.Calculators
                 TonsDisplacement = CalculateArmorTonnage(armorType, protectionLevel, ship.Hull.TonsDisplacement),
                 Cost = CalculateArmorCost(armorType, protectionLevel, HullCalculator.CalculateCost(ship.Hull)),
 
-                TechLevel = GetArmorTechLevel(armorType)
+                TechLevel = GetArmorTechLevel(armorType),
+                ProtectionLevel = protectionLevel
 
             };
 

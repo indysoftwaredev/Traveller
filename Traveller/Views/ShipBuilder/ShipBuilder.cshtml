@@ -126,6 +126,23 @@
                                 return;
                             }
                             document.getElementById('shipSummaryContainer').innerHTML = html;
+
+                            // After hull update, recalculate all components
+                            const componentRows = document.querySelectorAll('#shipSummary tbody tr');
+                            componentRows.forEach((row, index) => {
+                                fetch(`/ShipBuilder/RecalculateComponent?componentType=${row.dataset.componentType}&index=${index}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        // Update the row with new values
+                                        const cells = row.cells;
+                                        cells[1].textContent = data.techLevel;
+                                        cells[2].textContent = data.tonsDisplacement;
+                                        cells[3].textContent = data.powerRequired;
+                                        cells[4].textContent = data.costMCr;
+                                    })
+                                    .catch(error => console.error('Error updating component:', error));
+                            });
+
                         })
                         .catch(error => {
                             console.error('Error:', error);

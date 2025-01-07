@@ -102,5 +102,13 @@ namespace ShipBuilderCalculatorTests
             Assert.Equal(15, actual);
         }
 
+        [Fact]
+        public void WhenCalculatingArmor_ProtectionLevelIsPreserved()
+        {
+            Armor armor = ShipArmorCalculator.CalculateArmor(ArmorType.TitaniumSteel, 100, new Ship());
+
+            Assert.Equal(100, armor.ProtectionLevel);
+        }
+
     }
 }

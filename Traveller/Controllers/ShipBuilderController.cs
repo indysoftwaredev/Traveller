@@ -7,6 +7,13 @@ namespace Traveller.Controllers
 {
     public class ShipBuilderController : Controller
     {
+        private readonly ILogger<ShipBuilderController> _logger;
+
+        public ShipBuilderController(ILogger<ShipBuilderController> logger)
+        {
+            _logger = logger;
+        }
+
         private Ship GetShipFromSession()
         {
             return HttpContext.Session.Get<Ship>(ShipSessionKey) ?? new Ship();
@@ -58,6 +65,33 @@ namespace Traveller.Controllers
             SaveShipToSession(ship);
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public IActionResult RecalculateComponent(string componentType, int index)
+        {
+            var ship = GetShipFromSession();
+            var component = ship.Components[index];
+
+            //TODO: there's an opportunity to refactor here once we add more components            
+
+           if (component is Armor armor)
+            {
+                var recalculated = ShipArmorCalculator.CalculateArmor(armor.ArmorType, armor.ProtectionLevel, ship);
+                component.Cost = recalculated.Cost;
+                component.TonsDisplacement = recalculated.TonsDisplacement;
+                component.TechLevel = recalculated.TechLevel;
+            }
+
+            SaveShipToSession(ship);
+
+            return Json(new
+            {
+                costMCr = component.CostMCr,
+                tonsDisplacement = component.TonsDisplacement,
+                techLevel = component.TechLevel,
+                powerRequired = component.PowerRequired
+            });
         }
     }
 }
