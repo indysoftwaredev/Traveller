@@ -22,6 +22,8 @@ namespace Traveller.Models
             }
         }
 
+        public int ProtectionLevel { get; set; }
+
         private string GetDisplayName(ArmorType type)
         {
             var memberInfo = type.GetType().GetMember(type.ToString()).FirstOrDefault();
