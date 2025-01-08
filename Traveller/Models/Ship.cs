@@ -28,6 +28,8 @@ namespace Traveller.Models
         public decimal Cost => ShipCostCalculator.Calculate(this);
         
         public decimal TotalCostMCr => Cost / 1000000;
+
+        public decimal CargoSpace => ShipCargoSpaceCalculator.Calculate(this);
     }
 
     public enum TechLevel

@@ -10,8 +10,10 @@ namespace Traveller.Calculators
             decimal cost = 0;
             cost += ship.Hull.Cost;
 
-            //when there are components in the component list, 
-            //we will compile those costs as well
+            foreach (ShipComponent shipComponent in ship.Components)
+            {
+                cost += shipComponent.Cost;
+            }
 
             return cost;
         }

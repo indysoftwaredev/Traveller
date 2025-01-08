@@ -7,10 +7,7 @@
         <div>Hull: @(Model.Hull.TonsDisplacement)t @Html.DisplayFor(m => m.Hull.HullConfiguration)</div>
         <div>Cost (MCr): @Model.TotalCostMCr</div>
         <div>Hull Points: @Model.HullPoints</div>
-        @if (Model.Hull.UsableTonnage != Model.Hull.TonsDisplacement)
-        {
-            <label class="form-label">Usable Tonnage: @Model.Hull.UsableTonnage tons</label>
-        }
+        <div>Cargo: @(Model.CargoSpace)t</div>
     </div>
     <div class="card-body">
         <table class="table">
