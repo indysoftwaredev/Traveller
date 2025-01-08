@@ -196,10 +196,34 @@
                 // Run initial calculation
                 updateArmorCalculations();
 
-                
-            });
+                //delete button on components list
+                document.addEventListener('click', function (e) {
+                    if (e.target.closest('.delete-component')) {
+                        const row = e.target.closest('tr');
+                        const componentId = row.dataset.componentId;
 
-            document.addEventListener('DOMContentLoaded', function () {
+                        fetch('/ShipBuilder/DeleteComponent', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ componentId: componentId })
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.text();
+                            })
+                            .then(html => {
+                                // Update the ship summary with the new HTML
+                                document.getElementById('shipSummaryContainer').innerHTML = html;
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    }
+                });
             });
         </script>
     }

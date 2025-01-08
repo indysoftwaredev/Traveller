@@ -93,5 +93,26 @@ namespace Traveller.Controllers
                 powerRequired = component.PowerRequired
             });
         }
+
+        [HttpPost]
+        public IActionResult DeleteComponent([FromBody] DeleteComponentModel model)
+        {
+            var ship = GetShipFromSession();
+            if (ship != null)
+            {
+                var component = ship.Components.FirstOrDefault(c => c.Id == model.ComponentId);
+                if (component != null)
+                {
+                    ship.Components.Remove(component);
+                    SaveShipToSession(ship);
+                }
+            }
+            return PartialView("_ShipSummary", ship);
+        }
+
+        public class DeleteComponentModel
+        {
+            public int ComponentId { get; set; }
+        }
     }
 }
