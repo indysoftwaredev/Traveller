@@ -36,5 +36,19 @@ namespace ShipBuilderCalculatorTests
             Assert.Equal(hull.Cost, ship.Cost);
         }
 
+        [Fact]
+        public void ShipCost_IsHullPlusComponents()
+        {
+            Hull hull = new Hull();
+            Ship ship = new Ship();
+
+            Armor armor = new Armor();
+            armor.Cost = 100;
+            ship.Components.Add(armor);
+
+            Assert.Equal(ship.Cost, hull.Cost + armor.Cost);
+
+        }
+
     }
 }
