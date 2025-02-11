@@ -241,12 +241,76 @@ class ComponentManager {
     }
 }
 
+// State management for collapsible sections
+class CollapseStateManager {
+    constructor() {
+        this.STORAGE_KEY = 'shipBuilder_collapseStates';
+        this.bindEvents();
+        this.restoreStates();
+        this.bindFormSubmits();
+    }
+
+    bindFormSubmits() {
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', () => this.saveAllStates());
+        });
+    }
+
+    saveAllStates() {
+        document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(trigger => {
+            const targetId = trigger.getAttribute('data-bs-target').substring(1);
+            this.saveState(targetId);
+        });
+    }
+
+    bindEvents() {
+        document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(trigger => {
+            const targetId = trigger.getAttribute('data-bs-target').substring(1);
+            const section = document.getElementById(targetId);
+
+            section.addEventListener('shown.bs.collapse', () => {
+                this.saveState(targetId, true);
+            });
+
+            section.addEventListener('hidden.bs.collapse', () => {
+                this.saveState(targetId, false);
+            });
+        });
+    }
+
+    saveState(sectionId, isExpanded) {
+        const states = this.getStoredStates();
+        states[sectionId] = isExpanded;
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(states));
+    }
+
+    restoreStates() {
+        const states = this.getStoredStates();
+        Object.entries(states).forEach(([id, isExpanded]) => {
+            const section = document.getElementById(id);
+            if (section) {
+                if (isExpanded) {
+                    section.classList.add('show');
+                } else {
+                    section.classList.remove('show');
+                }
+            }
+        });
+    }
+
+    getStoredStates() {
+        const stored = localStorage.getItem(this.STORAGE_KEY);
+        return stored ? JSON.parse(stored) : {};
+    }
+}
+
 // Main ShipBuilder Application
 class ShipBuilder {
     static init() {
         this.hullManager = new HullManager();
         this.armorManager = new ArmorManager();
         this.componentManager = new ComponentManager();
+        this.collapseManager = new CollapseStateManager();
     }
 }
 

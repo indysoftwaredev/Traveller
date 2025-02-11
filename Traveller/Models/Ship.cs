@@ -26,10 +26,12 @@ namespace Traveller.Models
         public int HullPoints => HullCalculator.CalculateHullPoints(Hull);
 
         public decimal Cost => ShipCostCalculator.Calculate(this);
-        
+
         public decimal TotalCostMCr => Cost / 1000000;
 
         public decimal CargoSpace => ShipCargoSpaceCalculator.Calculate(this);
+
+        public decimal ProtectionPoints => Components.OfType<Armor>().Sum(a => a.ProtectionLevel);
     }
 
     public enum TechLevel

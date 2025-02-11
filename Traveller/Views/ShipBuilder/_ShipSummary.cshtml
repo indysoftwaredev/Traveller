@@ -8,6 +8,7 @@
         <div>Cost (MCr): @Model.TotalCostMCr</div>
         <div>Hull Points: @Model.HullPoints</div>
         <div>Cargo: @(Model.CargoSpace)t</div>
+        @if(Model.ProtectionPoints > 0) { <div>Protection Points: @Model.ProtectionPoints</div> }
     </div>
     <div class="card-body">
         <table class="table">
