@@ -101,6 +101,12 @@ class HullManager {
         try {
             const html = await HttpClient.post(Endpoints.calculateHull, new FormData(this.form));
             document.querySelector(Selectors.ship.container).innerHTML = html;
+            
+            const armorManager = ShipBuilder.armorManager;
+            if (armorManager && armorManager.form) {
+                await armorManager.updateCalculations();
+            }
+
             await this.recalculateComponents();
         } catch (error) {
             console.error('Hull update error:', error);
@@ -264,7 +270,7 @@ class CollapseStateManager {
     }
 
     bindEvents() {
-        document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(trigger => {
+        document.querySelectorAll('div[data-bs-toggle="collapse"]').forEach(trigger => {
             const targetId = trigger.getAttribute('data-bs-target').substring(1);
             const section = document.getElementById(targetId);
 
